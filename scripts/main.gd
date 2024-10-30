@@ -134,37 +134,45 @@ func _ready():
 
 	# Configurar panel de nivel completado
 	completion_panel = Panel.new()
-	completion_panel.size = Vector2(800, 300)
+	completion_panel.size = Vector2(800, 300)  # Tamaño del panel
+	add_child(completion_panel)
+	completion_panel.visible = false
+
+	# Centrar el panel en la pantalla
 	completion_panel.anchor_left = 0.5
 	completion_panel.anchor_top = 0.5
 	completion_panel.anchor_right = 0.5
 	completion_panel.anchor_bottom = 0.5
-	completion_panel.offset_left = -completion_panel.size.x / 2
-	completion_panel.offset_top = -completion_panel.size.y / 2
-	add_child(completion_panel)
-	completion_panel.visible = false
 
+	# VBoxContainer para el contenido del panel
 	var vbox = VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_FILL
-	vbox.size_flags_vertical = Control.SIZE_FILL
-	vbox.anchor_left = 0.5
-	vbox.anchor_top = 0.5
-	vbox.anchor_right = 0.5
-	vbox.anchor_bottom = 0.5
-	vbox.offset_left = -vbox.size.x / 2
-	vbox.offset_top = -vbox.size.y / 2
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	completion_panel.add_child(vbox)
 
+	# Crear etiqueta de finalización
 	var completion_label = Label.new()
 	completion_label.text = "Nivel 1 Completado"
 	completion_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	completion_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	vbox.add_child(completion_label)
+	
+	# Crear etiqueta para mostrar el tiempo
+	var time_label = Label.new()
+	time_label.text = "¡Ganaste! Tiempo: " + str(elapsed_time) + "s"
+	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	time_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	vbox.add_child(time_label)
 
+	# Botón para continuar
 	continue_button = Button.new()
 	continue_button.text = "Siguiente nivel"
 	continue_button.set_custom_minimum_size(Vector2(200, 60))
 	continue_button.connect("pressed", Callable(self, "_on_continue_button_pressed"))
 	vbox.add_child(continue_button)
+
+	# Establecer el tamaño del VBoxContainer para que ajuste su contenido
+	vbox.size = Vector2(800, 300)  # Asegúrate de que el VBox tenga un tamaño definido
 
 	completion_panel.add_child(vbox)
 	add_child(completion_panel)
@@ -226,7 +234,7 @@ func _process(delta):
 				update_labels()  # Actualizar etiquetas de información
 
 				# Verificar si se han eliminado suficientes letras para completar el nivel
-				if letters_removed >= 20:
+				if letters_removed >= 3:
 					level_completed = true  # Marcar el nivel como completado
 					show_completion_panel()  # Mostrar panel de finalización
 					letter_timer.stop()  # Detener el temporizador
@@ -281,6 +289,7 @@ func update_labels():
 # Función para mostrar el panel de nivel completado
 # ------------------------------
 func show_completion_panel():
+	
 	letter_timer.stop()  # Detener el temporizador
 	completion_panel.visible = true  # Mostrar panel de completado
 
@@ -294,13 +303,26 @@ func show_completion_panel():
 
 	# Aplicar la fuente personalizada al texto del panel de victoria y al botón
 	var font = load("res://fonts/OpenSans.ttf")  # Ruta a la fuente
-	completion_panel.get_child(0).get_child(0).add_theme_font_override("font", font)  # Fuente para el texto de "Nivel 1 Completado"
-	completion_panel.get_child(0).get_child(0).add_theme_font_size_override("font_size", 64)  # Tamaño de la fuente
-	completion_panel.get_child(0).get_child(0).add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Cambiar color del texto
+	var completion_label = completion_panel.get_child(0).get_child(0)
+	completion_label.add_theme_font_override("font", font)  # Fuente para el texto de "Nivel 1 Completado"
+	completion_label.add_theme_font_size_override("font_size", 64)  # Tamaño de la fuente
+	completion_label.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Cambiar color del texto
 
 	continue_button.add_theme_font_override("font", font)  # Fuente para el botón "Continuar"
 	continue_button.add_theme_font_size_override("font_size", 40)  # Tamaño de la fuente para el botón
 	continue_button.add_theme_color_override("font_color", Color(0.8, 0.2, 0.2))  # Cambiar color del texto del botón
+	
+# Actualizar el label de tiempo
+	var time_label = completion_panel.get_child(0).get_child(1)
+	time_label.text = "¡Ganaste! Tiempo: " + str(int(elapsed_time)) + "s"  # Actualiza el tiempo mostrado
+
+# Asegúrate de que el tamaño del panel sea correcto
+	completion_panel.size = Vector2(800, 300)  # Establecer tamaño del panel
+
+# Calcular la posición para centrar el panel manualmente
+	completion_panel.position = (Vector2(get_viewport().size.x, get_viewport().size.y) - completion_panel.size) / 2
+	
+
 
 # ------------------------------
 # Función que se ejecuta al presionar el botón de continuar
