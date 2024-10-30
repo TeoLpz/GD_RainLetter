@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://b08a8xl4ti468"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_2cs8o"]
+[ext_resource type="Texture2D" uid="uid://4rhci5p5fwn" path="res://assets/fondo_2.jpg" id="2_e77rc"]
+
+[node name="Main" type="Node2D"]
+position = Vector2(2, 4)
+script = ExtResource("1_2cs8o")
+
+[node name="Fondo2" type="Sprite2D" parent="."]
+position = Vector2(719.5, 402.5)
+scale = Vector2(0.749479, 0.607511)
+texture = ExtResource("2_e77rc")
