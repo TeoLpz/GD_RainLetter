@@ -283,6 +283,8 @@ func restart_game():
 	update_labels()  # Actualizar etiquetas de información
 	background_music.stop()  # Detener música de fondo
 	background_music.play()  # Reproducir música de fondo
+	letter_timer.start()  # Asegúrate de reiniciar el temporizador
+	letter_timer.wait_time = randf_range(0.5, 2)  # Establecer tiempo de espera
 
 # ------------------------------
 # Función para actualizar las etiquetas de información
@@ -296,7 +298,6 @@ func update_labels():
 # Función para mostrar el panel de nivel completado
 # ------------------------------
 func show_completion_panel():
-	
 	letter_timer.stop()  # Detener el temporizador
 	completion_panel.visible = true  # Mostrar panel de completado
 
