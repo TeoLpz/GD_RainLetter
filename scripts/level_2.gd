@@ -1,12 +1,14 @@
 extends Node2D
 
-# Variables para controlar las letras
-var total_letters: int = 5  # Solo vocales (A, E, I, O, U)
+# ------------------------------
+# Variables para controlar el juego
+# ------------------------------
+var total_numbers: int = 10  # Total de números a manejar
 var fall_speed_range: Vector2 = Vector2(50, 200)  # Rango de velocidades de caída
-var letters: Array = []  # Lista de nodos FallingLetter que representan las letras
+var numbers: Array = []  # Lista de números que caen
 
-# Temporizador para crear letras
-var letter_timer: Timer
+# Temporizador para crear números
+var number_timer: Timer
 
 # Nodo para la música de fondo
 var background_music: AudioStreamPlayer
@@ -14,44 +16,49 @@ var background_music: AudioStreamPlayer
 # Tiempo de juego
 var elapsed_time: float = 0.0  # Tiempo transcurrido desde el inicio
 
-# Clase para letras que caen
-class FallingLetter extends Label:
+# ------------------------------
+# Clase para números que caen
+# ------------------------------
+class FallingNumber extends Label:
 	var speed: float = 0.0  # Velocidad de caída
-	var spawn_time: float = 0.0  # Tiempo de aparición de la letra
+	var spawn_time: float = 0.0  # Tiempo de aparición del número
 
-	# Método que se ejecuta al crear la letra
+	# Método que se ejecuta al crear el número
 	func _ready():
 		self.add_theme_color_override("font_color", get_random_color())  # Color aleatorio
-		var font = load("res://OpenSans.ttf")  # Cambia la ruta al archivo de fuente
+		var font = load("res://fonts/OpenSans.ttf")  # Cargar fuente
 		self.add_theme_font_override("font", font)
 		self.add_theme_font_size_override("font_size", 64)
 		self.add_theme_color_override("outline_color", Color.BLACK)
 		self.add_theme_constant_override("outline_size", 2)
 
 	func get_random_color() -> Color:
+		# Generar un color aleatorio
 		var red = randi() % 256 / 255.0
 		var green = randi() % 256 / 255.0
 		var blue = randi() % 256 / 255.0
 		return Color(red, green, blue)
 
-# Número máximo de letras en pantalla
-var max_letters: int = 10
-var additional_letters: int = 0
+# ------------------------------
+# Variables para el juego
+# ------------------------------
+var max_numbers: int = 10  # Número máximo de números en pantalla
+var additional_numbers: int = 0  # Números adicionales a generar
 
-# Límite de letras perdidas (vidas)
-var max_lives: int = 5
+# Límite de números perdidos (vidas)
+var max_lives: int = 5  # Máximo de vidas
 var remaining_lives: int = max_lives  # Vidas restantes
 
-# Contador de letras eliminadas
-var letters_removed: int = 0
+# Contador de números eliminados
+var numbers_removed: int = 0
 
-# Etiquetas para mostrar el tiempo transcurrido, letras eliminadas y vidas restantes
+# Etiquetas para mostrar información del juego
 var timer_label: Label
-var letters_removed_label: Label
-var letters_lost_label: Label
+var numbers_removed_label: Label
+var numbers_lost_label: Label
 
 # Variables para el sonido
-var pop_sound: AudioStreamPlayer
+var pop_sound: AudioStreamPlayer  # Sonido al eliminar un número
 var life_loss_sound: AudioStreamPlayer  # Sonido para la pérdida de vida
 
 # Panel de nivel completado
@@ -61,219 +68,262 @@ var continue_button: Button
 # Fondo del juego
 var background_texture: Texture
 
-# Variable para controlar si el nivel ha sido completado
-var level_completed: bool = false
+# Control del estado del nivel
+var level_completed: bool = false  # Si el nivel ha sido completado
 
 # Variable para el sonido de victoria
 var victory_sound: AudioStreamPlayer
 
+# ------------------------------
+# Función que se ejecuta al iniciar el juego
+# ------------------------------
 func _ready():
+	# Inicializar música de fondo
 	background_music = AudioStreamPlayer.new()
-	var audio_stream = preload("res://happysound.mp3")
+	var audio_stream = preload("res://sounds/happysound.mp3")
 	if audio_stream is AudioStream:
 		audio_stream.loop = true
 	background_music.stream = audio_stream
 	add_child(background_music)
 	background_music.play()
 
-	# Cargar y establecer el fondo
-	#background_texture = preload("res://assets/fondo_2.jpg")
+	# Configurar el fondo del juego
 	var background_rect = TextureRect.new()
 	background_rect.texture = background_texture
-	background_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED  # Mantener proporciones
+	background_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	background_rect.anchor_left = 0.5
 	background_rect.anchor_top = 0.5
-	background_rect.position = Vector2(0, 0)  # Establecer la posición a (0, 0)
-	background_rect.set_size(get_viewport().size)  # Ajustar al tamaño de la pantalla
+	background_rect.position = Vector2(0, 0)
+	background_rect.set_size(get_viewport().size)
 	add_child(background_rect)
 
-	letter_timer = Timer.new()
-	letter_timer.wait_time = randf_range(0.5, 2)
-	letter_timer.connect("timeout", Callable(self, "_on_letter_timer_timeout"))
-	add_child(letter_timer)
-	letter_timer.start()
+	# Configurar temporizador de números
+	number_timer = Timer.new()
+	number_timer.wait_time = randf_range(0.5, 2)
+	number_timer.connect("timeout", Callable(self, "_on_number_timer_timeout"))
+	add_child(number_timer)
+	number_timer.start()
 
+	# Inicializar etiquetas de información
 	timer_label = Label.new()
 	timer_label.position = Vector2(10, 10)
 	add_child(timer_label)
 
-	letters_removed_label = Label.new()
-	letters_removed_label.position = Vector2(10, 30)
-	add_child(letters_removed_label)
+	numbers_removed_label = Label.new()
+	numbers_removed_label.position = Vector2(10, 30)
+	add_child(numbers_removed_label)
 
-	letters_lost_label = Label.new()
-	letters_lost_label.position = Vector2(10, 50)
-	add_child(letters_lost_label)
+	numbers_lost_label = Label.new()
+	numbers_lost_label.position = Vector2(10, 50)
+	add_child(numbers_lost_label)
 
+	# Cargar sonidos
 	pop_sound = AudioStreamPlayer.new()
-	pop_sound.stream = preload("res://pop.mp3")
+	pop_sound.stream = preload("res://sounds/pop.mp3")
 	add_child(pop_sound)
 
-	# Cargar el sonido de victoria
 	victory_sound = AudioStreamPlayer.new()
-	victory_sound.stream = preload("res://level-win-6416.mp3")  # Cambia la ruta al archivo de sonido de victoria
-	victory_sound.volume_db = 5  # Aumenta el volumen en 5 decibelios
+	victory_sound.stream = preload("res://sounds/level-win-6416.mp3")
+	victory_sound.volume_db = 5
 	add_child(victory_sound)
 
-	# Cargar el sonido para la pérdida de vida
 	life_loss_sound = AudioStreamPlayer.new()
-	life_loss_sound.stream = preload("res://error-10-206498.mp3")  # Cambia la ruta al archivo de sonido de pérdida de vida
-	life_loss_sound.volume_db = 5  # Aumenta el volumen en 5 decibelios
+	life_loss_sound.stream = preload("res://sounds/error-10-206498.mp3")
+	life_loss_sound.volume_db = 5
 	add_child(life_loss_sound)
 
+	# Configurar panel de nivel completado
 	completion_panel = Panel.new()
-	completion_panel.size = Vector2(800, 300)
+	completion_panel.size = Vector2(800, 300)  # Tamaño del panel
+	add_child(completion_panel)
+	completion_panel.visible = false
+
+	# Centrar el panel en la pantalla
 	completion_panel.anchor_left = 0.5
 	completion_panel.anchor_top = 0.5
 	completion_panel.anchor_right = 0.5
 	completion_panel.anchor_bottom = 0.5
-	completion_panel.offset_left = -completion_panel.size.x / 2
-	completion_panel.offset_top = -completion_panel.size.y / 2
-	add_child(completion_panel)
-	completion_panel.visible = false
 
+	# VBoxContainer para el contenido del panel
 	var vbox = VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_FILL
-	vbox.size_flags_vertical = Control.SIZE_FILL
-	vbox.anchor_left = 0.5
-	vbox.anchor_top = 0.5
-	vbox.anchor_right = 0.5
-	vbox.anchor_bottom = 0.5
-	vbox.offset_left = -vbox.size.x / 2
-	vbox.offset_top = -vbox.size.y / 2
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	completion_panel.add_child(vbox)
 
+	# Crear etiqueta de finalización
 	var completion_label = Label.new()
 	completion_label.text = "Nivel 2 Completado"
 	completion_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	completion_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	vbox.add_child(completion_label)
+	
+	# Crear etiqueta para mostrar el tiempo
+	var time_label = Label.new()
+	time_label.text = "¡Ganaste! Tiempo: " + str(elapsed_time) + "s"
+	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	time_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	vbox.add_child(time_label)
 
+	# Botón para continuar
 	continue_button = Button.new()
 	continue_button.text = "Siguiente nivel"
 	continue_button.set_custom_minimum_size(Vector2(200, 60))
 	continue_button.connect("pressed", Callable(self, "_on_continue_button_pressed"))
 	vbox.add_child(continue_button)
 
+	# Establecer el tamaño del VBoxContainer para que ajuste su contenido
+	vbox.size = Vector2(800, 300)  # Asegúrate de que el VBox tenga un tamaño definido
+
 	completion_panel.add_child(vbox)
 	add_child(completion_panel)
 
-func _on_letter_timer_timeout():
-	if letters.size() < max_letters + additional_letters and not level_completed:  # Solo genera letras si el nivel no está completo
+# ------------------------------
+# Función que se ejecuta al tiempo del temporizador de números
+# ------------------------------
+func _on_number_timer_timeout():
+	if numbers.size() < max_numbers + additional_numbers and not level_completed:
+		# Generar números dentro de un rango definido
 		var min_x = 130
 		var max_x = get_viewport().size.x - 130
 		var start_y = -50
 
-		var letter = FallingLetter.new()
-		var numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-		letter.text = numbers[randi() % numbers.size()]
-		letter.position = Vector2(randf_range(min_x, max_x), start_y)
-		letter.speed = get_letter_speed()
-		letter.spawn_time = elapsed_time
-		add_child(letter)
-		letters.append(letter)
-		letter_timer.wait_time = randf_range(0.5, 1.5)
+		var number = FallingNumber.new()
+		number.text = str(randi() % 10)  # Seleccionar un número aleatorio entre 0-9
+		number.position = Vector2(randf_range(min_x, max_x), start_y)
+		number.speed = get_number_speed()  # Obtener velocidad de caída
+		number.spawn_time = elapsed_time  # Registrar el tiempo de aparición
+		add_child(number)
+		numbers.append(number)
+		number_timer.wait_time = randf_range(0.5, 1.5)  # Cambiar tiempo de espera del temporizador
 
-func get_letter_speed() -> float:
+# ------------------------------
+# Función para obtener la velocidad del número
+# ------------------------------
+func get_number_speed() -> float:
 	if elapsed_time < 30:
-		return randf_range(10, 30)
+		return randf_range(10, 30)  # Velocidad inicial
 	else:
-		return randf_range(40, 55)
+		return randf_range(40, 55)  # Velocidad después de 30 segundos
 
+# ------------------------------
+# Función que se ejecuta cada frame
+# ------------------------------
 func _process(delta):
-	elapsed_time += delta
+	elapsed_time += delta  # Aumentar el tiempo transcurrido
 	if int(elapsed_time) % 60 == 0 and elapsed_time > 60:
-		additional_letters += 2
+		additional_numbers += 2  # Aumentar números adicionales cada 60 segundos
 
-	for letter in letters:
-		letter.position.y += letter.speed * delta
-		var letter_text = letter.text 
+	# Actualizar la posición de cada número
+	for number in numbers:
+		number.position.y += number.speed * delta
+		var number_text = number.text
+		var input_action = "ui_accept_" + number_text
 
+		if Input.is_action_just_pressed(input_action):  # Verificar si se presionó la tecla correspondiente
+			var number_to_remove: FallingNumber = null
+			for n in numbers:
+				if n.text == number_text and (number_to_remove == null or n.spawn_time < number_to_remove.spawn_time):
+					number_to_remove = n
 
-		# Detectar si se presionó la tecla correspondiente al número
-		if is_number_key_pressed(letter_text):
-			var letter_to_remove: FallingLetter = null
-			for l in letters:
-				if l.text == letter_text and (letter_to_remove == null or l.spawn_time < letter_to_remove.spawn_time):
-					letter_to_remove = l
+			if number_to_remove != null:
+				number_to_remove.hide()  # Ocultar número
+				numbers.erase(number_to_remove)  # Eliminar de la lista
+				numbers_removed += 1  # Aumentar el contador de números eliminados
+				pop_sound.play()  # Reproducir sonido de eliminación
+				update_labels()  # Actualizar etiquetas de información
 
-			if letter_to_remove != null:
-				letter_to_remove.hide()
-				letters.erase(letter_to_remove)
-				letters_removed += 1
-				pop_sound.play()
-				update_labels()
-
-				# Verificar si se han eliminado 60 numeros para mostrar el panel de nivel completado
-				if letters_removed >= 20:
+				# Verificar si se han eliminado suficientes números para completar el nivel
+				if numbers_removed >= 3:
 					level_completed = true  # Marcar el nivel como completado
-					show_completion_panel()
-					letter_timer.stop()  # Detener el temporizador de letras
+					show_completion_panel()  # Mostrar panel de finalización
+					number_timer.stop()  # Detener el temporizador
 				break
 
-		if letter.position.y > get_viewport().size.y:
-			letter_lost(letter)
+		# Comprobar si el número ha caído fuera de la pantalla
+		if number.position.y > get_viewport().size.y:
+			number_lost(number)  # Manejar la pérdida de número
 
-	update_labels()
-func is_number_key_pressed(letter_text: String) -> bool:
-		# Verificar si se presionó la tecla numérica correspondiente
-	var key_code = OS.find_keycode_from_string(letter_text)
-	return Input.is_key_pressed(key_code)
+	update_labels()  # Actualizar etiquetas de información
 
+# ------------------------------
+# Función que maneja la pérdida de un número
+# ------------------------------
+func number_lost(number):
+	numbers.erase(number)  # Eliminar número de la lista
+	number.queue_free()  # Liberar número de la escena
+	remaining_lives -= 1  # Disminuir el número de vidas
 
-func letter_lost(letter):
-	letters.erase(letter)  # Elimina la letra de la lista
-	letter.queue_free()  # Elimina la letra de la escena
-	remaining_lives -= 1
-
-	# Reproducir el sonido de pérdida de vida
-	life_loss_sound.play()
+	life_loss_sound.play()  # Reproducir sonido de pérdida de vida
 
 	if remaining_lives <= 0:
-		restart_game()
+		restart_game()  # Reiniciar juego si no quedan vidas
 
+# ------------------------------
+# Función para reiniciar el juego
+# ------------------------------
 func restart_game():
-	remaining_lives = max_lives
-	letters_removed = 0
-	elapsed_time = 0
-	additional_letters = 0
-	level_completed = false  # Reiniciar el estado del nivel
+	remaining_lives = max_lives  # Reiniciar vidas
+	numbers_removed = 0  # Reiniciar contador de números eliminados
+	elapsed_time = 0  # Reiniciar tiempo
+	additional_numbers = 0  # Reiniciar números adicionales
+	level_completed = false  # Reiniciar estado del nivel
 
-	for letter in letters:
-		letter.queue_free()
-	letters.clear()
+	for number in numbers:
+		number.queue_free()  # Liberar todos los números en pantalla
+	numbers.clear()  # Limpiar lista de números
 
-	update_labels()
-	background_music.stop()
-	background_music.play()
+	update_labels()  # Actualizar etiquetas de información
+	background_music.stop()  # Detener música de fondo
+	background_music.play()  # Reproducir música de fondo
 
+# ------------------------------
+# Función para actualizar las etiquetas de información
+# ------------------------------
 func update_labels():
 	timer_label.text = "Tiempo: " + str(int(elapsed_time)) + "s"
-	letters_removed_label.text = "Puntaje: " + str(letters_removed)
-	letters_lost_label.text = "Vidas: " + str(remaining_lives)
+	numbers_removed_label.text = "Puntaje: " + str(numbers_removed)
+	numbers_lost_label.text = "Vidas: " + str(remaining_lives)
 
+# ------------------------------
+# Función para mostrar el panel de nivel completado
+# ------------------------------
 func show_completion_panel():
-	letter_timer.stop()
-	completion_panel.visible = true
+	
+	number_timer.stop()  # Detener el temporizador
+	completion_panel.visible = true  # Mostrar panel de completado
 
-	# Detener la música de fondo y reproducir el sonido de victoria
-	background_music.stop()
-	victory_sound.play()
+	background_music.stop()  # Detener música de fondo
+	victory_sound.play()  # Reproducir sonido de victoria
 
-	# Eliminar todas las letras en pantalla
-	for letter in letters:
-		letter.queue_free()
-	letters.clear()
+	# Eliminar todos los números en pantalla
+	for number in numbers:
+		number.queue_free()
+	numbers.clear()
 
 	# Aplicar la fuente personalizada al texto del panel de victoria y al botón
-	var font = load("res://OpenSans.ttf")  # Ruta a la fuente
-	completion_panel.get_child(0).get_child(0).add_theme_font_override("font", font)  # Fuente para el texto de "Nivel 1 Completado"
-	completion_panel.get_child(0).get_child(0).add_theme_font_size_override("font_size", 64)  # Tamaño de la fuente
-	completion_panel.get_child(0).get_child(0).add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Cambiar el color del texto (opcional)
+	var font = load("res://fonts/OpenSans.ttf")  # Ruta a la fuente
+	var completion_label = completion_panel.get_child(0).get_child(0)
+	completion_label.add_theme_font_override("font", font)  # Fuente para el texto de "Nivel 1 Completado"
+	completion_label.add_theme_font_size_override("font_size", 64)  # Tamaño de la fuente
+	completion_label.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Cambiar color del texto
 
 	continue_button.add_theme_font_override("font", font)  # Fuente para el botón "Continuar"
 	continue_button.add_theme_font_size_override("font_size", 40)  # Tamaño de la fuente para el botón
-	continue_button.add_theme_color_override("font_color", Color(0.8, 0.2, 0.2))  # Cambiar el color del texto del botón (opcional)
+	continue_button.add_theme_color_override("font_color", Color(0.8, 0.2, 0.2))  # Cambiar color del texto del botón
+	
+# Actualizar el label de tiempo
+	var time_label = completion_panel.get_child(0).get_child(1)
+	time_label.text = "¡Ganaste! Tiempo: " + str(int(elapsed_time)) + "s"  # Actualiza el tiempo mostrado
 
+# Asegúrate de que el tamaño del panel sea correcto
+	completion_panel.size = Vector2(800, 300)  # Establecer tamaño del panel
+
+# Calcular la posición para centrar el panel manualmente
+	completion_panel.position = (Vector2(get_viewport().size.x, get_viewport().size.y) - completion_panel.size) / 2
+
+# ------------------------------
+# Función que se ejecuta al presionar el botón de continuar
+# ------------------------------
 func _on_continue_button_pressed():
-	restart_game()
-	completion_panel.visible = false
+	restart_game()  # Reiniciar juego
+	completion_panel.visible = false  # Ocultar panel de completado

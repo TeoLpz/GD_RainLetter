@@ -170,6 +170,13 @@ func _ready():
 	continue_button.set_custom_minimum_size(Vector2(200, 60))
 	continue_button.connect("pressed", Callable(self, "_on_continue_button_pressed"))
 	vbox.add_child(continue_button)
+	
+	# Botón para reintentar
+	var retry_button = Button.new()
+	retry_button.text = "Reintentar"
+	retry_button.set_custom_minimum_size(Vector2(200, 60))
+	retry_button.connect("pressed", Callable(self, "_on_retry_button_pressed"))
+	vbox.add_child(retry_button)
 
 	# Establecer el tamaño del VBoxContainer para que ajuste su contenido
 	vbox.size = Vector2(800, 300)  # Asegúrate de que el VBox tenga un tamaño definido
@@ -328,5 +335,9 @@ func show_completion_panel():
 # Función que se ejecuta al presionar el botón de continuar
 # ------------------------------
 func _on_continue_button_pressed():
-	restart_game()  # Reiniciar juego
 	completion_panel.visible = false  # Ocultar panel de completado
+	get_tree().change_scene_to_file("res://scene/level_2.tscn")
+	
+func _on_retry_button_pressed():
+	completion_panel.visible = false  # Ocultar panel de completado
+	restart_game()  # Reiniciar juego
