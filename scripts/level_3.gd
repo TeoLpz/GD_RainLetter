@@ -152,7 +152,7 @@ func _ready():
 
 	# Crear etiqueta de finalización
 	var completion_label = Label.new()
-	completion_label.text = "Nivel 2 Completado"
+	completion_label.text = "Nivel 3 Completado"
 	completion_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	completion_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	vbox.add_child(completion_label)
@@ -188,13 +188,20 @@ func _on_number_timer_timeout():
 		var start_y = -50
 
 		var number = FallingNumber.new()
-		number.text = str(randi() % 10)  # Seleccionar un número aleatorio entre 0-9
+		number.text = get_random_character()  # Seleccionar un número aleatorio entre 0-9
 		number.position = Vector2(randf_range(min_x, max_x), start_y)
 		number.speed = get_number_speed()  # Obtener velocidad de caída
 		number.spawn_time = elapsed_time  # Registrar el tiempo de aparición
 		add_child(number)
 		numbers.append(number)
 		number_timer.wait_time = randf_range(0.5, 1.5)  # Cambiar tiempo de espera del temporizador
+		
+# ------------------------------
+# Función para obtener un carácter aleatorio (número o vocal)
+# ------------------------------
+func get_random_character() -> String:
+	var characters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "E", "I", "O", "U"]
+	return characters[int(randf() * characters.size())]
 
 # ------------------------------
 # Función para obtener la velocidad del número
@@ -327,4 +334,3 @@ func show_completion_panel():
 func _on_continue_button_pressed():
 	restart_game()  # Reiniciar juego
 	completion_panel.visible = false  # Ocultar panel de completado
-	get_tree().change_scene_to_file("res://scene/level_3.tscn")
