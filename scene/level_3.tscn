@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://did0b0b5g7l6j"]
+[gd_scene load_steps=4 format=3 uid="uid://did0b0b5g7l6j"]
 
 [ext_resource type="Script" path="res://scripts/level_3.gd" id="1_wi8m1"]
-[ext_resource type="Texture2D" uid="uid://4rhci5p5fwn" path="res://assets/fondo_2.jpg" id="2_kwwks"]
+[ext_resource type="Texture2D" uid="uid://dfm281fjq280r" path="res://assets/fondo3.jpg" id="3_dsatw"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tywlf"]
 
 [node name="level2" type="Node2D"]
 script = ExtResource("1_wi8m1")
@@ -9,11 +11,9 @@ script = ExtResource("1_wi8m1")
 [node name="Fondo2" type="Sprite2D" parent="."]
 position = Vector2(711, 402)
 scale = Vector2(0.742708, 0.592047)
-texture = ExtResource("2_kwwks")
+texture = SubResource("CompressedTexture2D_tywlf")
 
-[node name="TextEdit" type="TextEdit" parent="Fondo2"]
-offset_left = 139.0
-offset_top = -633.0
-offset_right = 500.0
-offset_bottom = -576.0
-text = "Nivel 3:Presiona todos los números y vocales"
+[node name="Fondo3" type="Sprite2D" parent="."]
+position = Vector2(711.25, 402.75)
+scale = Vector2(0.744531, 0.591679)
+texture = ExtResource("3_dsatw")

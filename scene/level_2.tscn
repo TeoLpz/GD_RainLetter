@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwblpln3fwouv"]
 
 [ext_resource type="Script" path="res://scripts/level_2.gd" id="1_gcwi4"]
-[ext_resource type="Texture2D" uid="uid://4rhci5p5fwn" path="res://assets/fondo_2.jpg" id="2_6kg00"]
+[ext_resource type="Texture2D" uid="uid://b7jvkvl4ciltw" path="res://assets/fondo2.jpg" id="2_314sc"]
 
 [node name="level2" type="Node2D"]
 script = ExtResource("1_gcwi4")
@@ -9,4 +9,8 @@ script = ExtResource("1_gcwi4")
 [node name="Fondo2" type="Sprite2D" parent="."]
 position = Vector2(711, 402)
 scale = Vector2(0.742708, 0.592047)
-texture = ExtResource("2_6kg00")
+
+[node name="Fondo3" type="Sprite2D" parent="."]
+position = Vector2(706, 430.75)
+scale = Vector2(0.739583, 0.633653)
+texture = ExtResource("2_314sc")

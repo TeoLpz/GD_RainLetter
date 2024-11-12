@@ -240,7 +240,7 @@ func _process(delta):
 				update_labels()  # Actualizar etiquetas de información
 
 				# Verificar si se han eliminado suficientes números para completar el nivel
-				if numbers_removed >= 3:
+				if numbers_removed >= 10:
 					level_completed = true  # Marcar el nivel como completado
 					show_completion_panel()  # Mostrar panel de finalización
 					number_timer.stop()  # Detener el temporizador
