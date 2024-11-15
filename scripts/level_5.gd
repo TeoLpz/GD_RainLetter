@@ -176,6 +176,43 @@ func _ready():
 
 	completion_panel.add_child(vbox)
 	add_child(completion_panel)
+	
+	_on_pause_button()
+
+	
+
+# ------------------------------
+# Función para manejar el botón de pausa
+# ------------------------------
+func _on_pause_button():
+	# Botón de pausa
+	# Crear o actualizar el botón de pausa
+	var pause_button = get_node("pause_button") if has_node("pause_button") else Button.new()
+	if not has_node("pause_button"):
+		pause_button.name = "pause_button" 
+		pause_button.text = "||"  # Texto inicial (ícono de pausa)
+		pause_button.position = Vector2(get_viewport().size.x - 110, 10)  # Posición en la parte superior derecha
+		pause_button.set_custom_minimum_size(Vector2(100, 40))  # Tamaño del botón
+		pause_button.connect("pressed", Callable(self, "_on_pause_button_pressed"))
+		add_child(pause_button)
+
+# ------------------------------
+# Función para manejar el botón de pausa
+# ------------------------------
+func _on_pause_button_pressed():
+	var pause_button = get_node("pause_button")
+	
+	if get_tree().paused:
+		get_tree().paused = false  # Reanudar el juego
+		background_music.play()  # Reanudar la música si está definida# Reanudar la música si estaba en pausa
+		pause_button.text = "||"  # Cambiar el texto a pausa (ícono)
+		print("Juego reanudado")
+	else:
+		get_tree().paused = true  # Pausar el juego
+		background_music.stop()  # Detener la música
+		pause_button.text = "▶"  # Cambiar el texto a play (ícono)
+		print("Juego Pausado")
+		
 
 # ------------------------------
 # Función que se ejecuta al tiempo del temporizador de números
