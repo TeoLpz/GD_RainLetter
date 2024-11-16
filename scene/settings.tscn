@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://ckstjehwjhnt4"]
+[gd_scene load_steps=6 format=3 uid="uid://ckstjehwjhnt4"]
 
 [ext_resource type="Theme" uid="uid://cb2tqos08yhkd" path="res://assets/MinimalUI/MinimalUI.tres" id="1_8vxdm"]
 [ext_resource type="Script" path="res://scripts/settings.gd" id="2_lmq4b"]
+[ext_resource type="Texture2D" uid="uid://ced07b2tnwy8a" path="res://assets/teclado.png" id="3_0vyjp"]
+[ext_resource type="Texture2D" uid="uid://nh0xde5n53ti" path="res://assets/BG.png" id="3_o2jnq"]
+[ext_resource type="Texture2D" uid="uid://b4xa65e7668kp" path="res://assets/instrucciones.png" id="5_7mjdv"]
 
 [node name="Settings" type="TabContainer"]
 anchors_preset = 15
@@ -14,59 +17,35 @@ theme_override_font_sizes/font_size = 16
 current_tab = 0
 script = ExtResource("2_lmq4b")
 
-[node name="Controls" type="TabBar" parent="."]
+[node name="Bg" type="Sprite2D" parent="."]
+position = Vector2(268, 578)
+scale = Vector2(1, 1)
+texture = ExtResource("3_o2jnq")
+
+[node name="Controles" type="TabBar" parent="."]
 layout_mode = 2
 theme = ExtResource("1_8vxdm")
 theme_override_font_sizes/font_size = 20
 metadata/_tab_index = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Controls"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Controles"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -105.0
-offset_top = -81.0
-offset_right = 114.0
-offset_bottom = 83.0
+offset_left = -110.0
+offset_top = -60.5
+offset_right = 109.0
+offset_bottom = 103.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Controls/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Controles/HBoxContainer"]
 layout_mode = 2
 
-[node name="Up" type="Label" parent="Controls/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_font_sizes/font_size = 24
-text = "Up
-"
-
-[node name="Down" type="Label" parent="Controls/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_font_sizes/font_size = 24
-text = "Down"
-
-[node name="Left" type="Label" parent="Controls/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_font_sizes/font_size = 24
-text = "Left"
-
-[node name="Right" type="Label" parent="Controls/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_font_sizes/font_size = 24
-text = "Right"
-
-[node name="Back" type="Button" parent="Controls"]
+[node name="Regresar" type="Button" parent="Controles"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 1
 anchors_preset = 3
@@ -82,6 +61,16 @@ grow_horizontal = 0
 grow_vertical = 0
 theme = ExtResource("1_8vxdm")
 theme_override_font_sizes/font_size = 24
-text = "Back"
+text = "Regresar"
 
-[connection signal="pressed" from="Controls/Back" to="." method="_on_back_pressed"]
+[node name="Teclado" type="Sprite2D" parent="Controles"]
+position = Vector2(583, 412)
+scale = Vector2(1.47963, 1.27627)
+texture = ExtResource("3_0vyjp")
+
+[node name="Instrucciones" type="Sprite2D" parent="."]
+position = Vector2(597, 167)
+scale = Vector2(0.35198, 0.596577)
+texture = ExtResource("5_7mjdv")
+
+[connection signal="pressed" from="Controles/Regresar" to="." method="_on_back_pressed"]
