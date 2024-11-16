@@ -170,6 +170,13 @@ func _ready():
 	continue_button.set_custom_minimum_size(Vector2(200, 60))
 	continue_button.connect("pressed", Callable(self, "_on_continue_button_pressed"))
 	vbox.add_child(continue_button)
+	
+	# Botón para reintentar
+	var retry_button = Button.new()
+	retry_button.text = "Reintentar"
+	retry_button.set_custom_minimum_size(Vector2(200, 60))
+	retry_button.connect("pressed", Callable(self, "_on_retry_button_pressed"))
+	vbox.add_child(retry_button)
 
 	# Establecer el tamaño del VBoxContainer para que ajuste su contenido
 	vbox.size = Vector2(800, 300)  # Asegúrate de que el VBox tenga un tamaño definido
@@ -263,18 +270,20 @@ func number_lost(number):
 # ------------------------------
 func restart_game():
 	remaining_lives = max_lives  # Reiniciar vidas
-	numbers_removed = 0  # Reiniciar contador de números eliminados
+	numbers_removed = 0  # Reiniciar contador de letras eliminadas
 	elapsed_time = 0  # Reiniciar tiempo
-	additional_numbers = 0  # Reiniciar números adicionales
+	additional_numbers = 0  # Reiniciar letras adicionales
 	level_completed = false  # Reiniciar estado del nivel
 
 	for number in numbers:
-		number.queue_free()  # Liberar todos los números en pantalla
-	numbers.clear()  # Limpiar lista de números
+		number.queue_free()  # Liberar todas las letras en pantalla
+	numbers.clear()  # Limpiar lista de letras
 
 	update_labels()  # Actualizar etiquetas de información
 	background_music.stop()  # Detener música de fondo
 	background_music.play()  # Reproducir música de fondo
+	number_timer.start()  # Asegúrate de reiniciar el temporizador
+	number_timer.wait_time = randf_range(0.5, 2)  # Establecer tiempo de espera
 
 # ------------------------------
 # Función para actualizar las etiquetas de información
@@ -328,3 +337,7 @@ func _on_continue_button_pressed():
 	restart_game()  # Reiniciar juego
 	completion_panel.visible = false  # Ocultar panel de completado
 	get_tree().change_scene_to_file("res://scene/level_3.tscn")
+	
+func _on_retry_button_pressed():
+	completion_panel.visible = false  # Ocultar panel de completado
+	restart_game()  # Reiniciar juego
