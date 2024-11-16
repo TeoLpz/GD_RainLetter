@@ -1,5 +1,9 @@
 extends Node2D
 
+var pause_button : Button
+var pause_menu : Control
+var close_button : Button
+
 # ------------------------------
 # Variables para controlar el juego
 # ------------------------------
@@ -31,6 +35,7 @@ class FallingNumber extends Label:
 		self.add_theme_font_size_override("font_size", 64)
 		self.add_theme_color_override("outline_color", Color.BLACK)
 		self.add_theme_constant_override("outline_size", 2)
+		
 
 	func get_random_color() -> Color:
 		# Generar un color aleatorio
@@ -184,6 +189,39 @@ func _ready():
 	completion_panel.add_child(vbox)
 	add_child(completion_panel)
 
+	# MENU DE PAUSA
+	# Crear el botón de pausa
+	pause_button = Button.new()
+	pause_button.text = "Pausar"
+	
+	pause_button.position = Vector2(20, 20)  # Posicionar el botón en pantalla
+	add_child(pause_button)
+	pause_button.connect("pressed", Callable(self, "_on_pause_button_pressed"))
+
+	# Crear el menú de pausa
+	pause_menu = Control.new()
+	pause_menu.name = "PauseMenu"
+	pause_menu.visible = false  # Iniciar oculto
+	pause_menu.anchor_right = 1
+	pause_menu.anchor_bottom = 1
+	add_child(pause_menu)
+
+	# Crear fondo para el menú de pausa
+	var menu_bg = ColorRect.new()
+	menu_bg.color = Color(0, 0, 0, 0.7)  # Fondo semi-transparente
+	menu_bg.anchor_right = 1
+	menu_bg.anchor_bottom = 1
+	pause_menu.add_child(menu_bg)
+
+	# Crear el botón para cerrar el menú de pausa
+	close_button = Button.new()
+	close_button.text = "Cerrar"
+	
+	close_button.position = Vector2(200, 200)
+	pause_menu.add_child(close_button)
+	close_button.connect("pressed", Callable(self, "_on_close_button_pressed"))
+	
+	pause_menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 # ------------------------------
 # Función que se ejecuta al tiempo del temporizador de números
 # ------------------------------
@@ -341,3 +379,14 @@ func _on_continue_button_pressed():
 func _on_retry_button_pressed():
 	completion_panel.visible = false  # Ocultar panel de completado
 	restart_game()  # Reiniciar juego
+	
+# Métodos de pausa
+func _on_pause_button_pressed():
+	get_tree().paused = true
+	pause_menu.visible = true
+	pause_button.disabled = true 
+
+func _on_close_button_pressed():
+	pause_menu.visible = false
+	get_tree().paused = false
+	pause_button.disabled = false 
