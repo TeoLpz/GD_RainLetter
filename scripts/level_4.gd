@@ -94,6 +94,7 @@ func _ready():
 	background_music.play()
 
 	# Configurar el fondo del juego
+	background_texture = preload("res://assets/fondo2.jpg")
 	var background_rect = TextureRect.new()
 	background_rect.texture = background_texture
 	background_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -209,8 +210,17 @@ func _ready():
 	pause_menu = Control.new()
 	pause_menu.name = "PauseMenu"
 	pause_menu.visible = false  # Iniciar oculto
-	pause_menu.anchor_right = 1
-	pause_menu.anchor_bottom = 1
+		
+	# Configuración para centrar el menú
+	pause_menu.anchor_left = 0.5
+	pause_menu.anchor_top = 0.5
+	pause_menu.anchor_right = 0.5
+	pause_menu.anchor_bottom = 0.5
+	
+	pause_menu.offset_left = -100  # Ancho / 2 (ajusta según el tamaño real)
+	pause_menu.offset_top = -100   # Alto / 2 (ajusta según el tamaño real)
+	pause_menu.offset_right = 100  # Ancho / 2
+	pause_menu.offset_bottom = 100 # Alto / 2
 
 	# Asegúrate de agregar el menú de pausa al nodo principal solo una vez
 	if not has_node("PauseMenu"):
@@ -218,9 +228,8 @@ func _ready():
 
 	# Crear fondo para el menú de pausa
 	var menu_bg = ColorRect.new()
-	menu_bg.color = Color(0, 0, 0, 0.7)  # Fondo semi-transparente
-	menu_bg.anchor_right = 1
-	menu_bg.anchor_bottom = 1
+	menu_bg.color = Color(0, 0, 0, 0)  # Fondo semi-transparente
+	
 
 	# Asegúrate de agregar el fondo del menú de pausa solo una vez
 	if not pause_menu.has_node("MenuBG"):
