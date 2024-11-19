@@ -94,7 +94,7 @@ func _ready():
 	background_music.play()
 
 	# Configurar el fondo del juego
-	background_texture = preload("res://assets/fondo2.jpg")
+	background_texture = preload("res://assets/fondo4.jpg")
 	var background_rect = TextureRect.new()
 	background_rect.texture = background_texture
 	background_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -470,4 +470,4 @@ func _on_close_button_pressed():
 
 func _on_salir_button_pressed():
 	get_tree().paused = false  # Asegúrate de despausar antes de cambiar de escena
-	get_tree().change_scene_to_file("res://scene/Main.tscn")  # Cambia esto a la ruta de tu escena principal
+	get_tree().change_scene_to_file("res://level_select.tscn")  # Cambia esto a la ruta de tu escena principal

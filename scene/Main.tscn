@@ -1,10 +1,36 @@
-[gd_scene load_steps=6 format=3 uid="uid://dc388hkklqvvc"]
+[gd_scene load_steps=13 format=3 uid="uid://dc388hkklqvvc"]
 
-[ext_resource type="Theme" uid="uid://cb2tqos08yhkd" path="res://assets/MinimalUI/MinimalUI.tres" id="1_0ajpt"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_tievw"]
 [ext_resource type="Texture2D" uid="uid://d0iptv1mt3f" path="res://assets/fondo1.jpg" id="2_w25ur"]
 [ext_resource type="PackedScene" uid="uid://ckstjehwjhnt4" path="res://scene/settings.tscn" id="3_dt7l5"]
 [ext_resource type="Texture2D" uid="uid://cy7wi2jufnkl7" path="res://assets/letras.png" id="4_17ovb"]
+[ext_resource type="Texture2D" uid="uid://dkmkknx1qkcpm" path="res://assets/MinimalUI/buttons/Button.png" id="5_mc2lv"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i0vn5"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(401, 972, 181, 190)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m72p1"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(606, 972, 181, 190)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i1eo7"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(197, 972, 181, 190)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q1prs"]
+texture = ExtResource("5_mc2lv")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pg7fa"]
+texture = ExtResource("5_mc2lv")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a0v4i"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(2148, 537, 181, 189)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i726w"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(3093, 537, 181, 189)
 
 [node name="MainMenu" type="Node2D"]
 
@@ -39,46 +65,56 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Letras" type="Sprite2D" parent="UI/MainMenu/VBoxContainer"]
-position = Vector2(317, -117)
+position = Vector2(337, -118)
 texture = ExtResource("4_17ovb")
 
-[node name="Iniciar" type="Button" parent="UI/MainMenu/VBoxContainer"]
-custom_minimum_size = Vector2(100, 32)
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MainMenu/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="Iniciar" type="Button" parent="UI/MainMenu/VBoxContainer/HBoxContainer"]
+texture_filter = 3
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Salir")
 focus_neighbor_bottom = NodePath("../Controles")
-theme = ExtResource("1_0ajpt")
-theme_override_font_sizes/font_size = 24
-text = "Iniciar"
+theme_override_styles/hover = SubResource("StyleBoxTexture_i0vn5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_m72p1")
+theme_override_styles/normal = SubResource("StyleBoxTexture_i1eo7")
 
-[node name="Controles" type="Button" parent="UI/MainMenu/VBoxContainer"]
-custom_minimum_size = Vector2(100, 32)
+[node name="Controles" type="Button" parent="UI/MainMenu/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Iniciar")
 focus_neighbor_bottom = NodePath("../Salir")
-theme = ExtResource("1_0ajpt")
 theme_override_font_sizes/font_size = 24
-text = "Controles"
+theme_override_styles/hover = SubResource("StyleBoxTexture_q1prs")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_pg7fa")
+theme_override_styles/normal = SubResource("StyleBoxTexture_a0v4i")
 
-[node name="Salir" type="Button" parent="UI/MainMenu/VBoxContainer"]
-custom_minimum_size = Vector2(100, 32)
+[node name="Salir" type="Button" parent="UI/MainMenu/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Controles")
 focus_neighbor_bottom = NodePath("../Iniciar")
-theme = ExtResource("1_0ajpt")
 theme_override_font_sizes/font_size = 24
-text = "Salir
-"
+theme_override_styles/normal = SubResource("StyleBoxTexture_i726w")
 
 [node name="Settings" parent="UI" instance=ExtResource("3_dt7l5")]
 visible = false
 
-[connection signal="pressed" from="UI/MainMenu/VBoxContainer/Iniciar" to="UI/MainMenu" method="_on_start_pressed"]
-[connection signal="pressed" from="UI/MainMenu/VBoxContainer/Controles" to="UI/MainMenu" method="_on_option_pressed"]
-[connection signal="pressed" from="UI/MainMenu/VBoxContainer/Salir" to="UI/MainMenu" method="_on_quit_pressed"]
+[connection signal="pressed" from="UI/MainMenu/VBoxContainer/HBoxContainer/Iniciar" to="UI/MainMenu" method="_on_start_pressed"]
+[connection signal="pressed" from="UI/MainMenu/VBoxContainer/HBoxContainer/Controles" to="UI/MainMenu" method="_on_option_pressed"]
+[connection signal="pressed" from="UI/MainMenu/VBoxContainer/HBoxContainer/Salir" to="UI/MainMenu" method="_on_quit_pressed"]
