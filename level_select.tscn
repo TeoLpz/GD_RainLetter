@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bb4j37jcf566p"]
+[gd_scene load_steps=11 format=3 uid="uid://bb4j37jcf566p"]
 
 [ext_resource type="Texture2D" uid="uid://nh0xde5n53ti" path="res://assets/BG.png" id="1_7wc33"]
 [ext_resource type="Script" path="res://level_select.gd" id="1_ked1b"]
 [ext_resource type="Texture2D" uid="uid://7v1ppccp8pdd" path="res://assets/Window.png" id="2_ufr1g"]
 [ext_resource type="PackedScene" uid="uid://c17uvq6hcuehl" path="res://grid_container.tscn" id="4_y3d77"]
+[ext_resource type="Texture2D" uid="uid://dkmkknx1qkcpm" path="res://assets/MinimalUI/buttons/Button.png" id="5_tsmm8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2vq8k"]
 atlas = ExtResource("2_ufr1g")
@@ -12,6 +13,18 @@ region = Rect2(1057, 162, 926, 741)
 [sub_resource type="AtlasTexture" id="AtlasTexture_fmeoa"]
 atlas = ExtResource("2_ufr1g")
 region = Rect2(1336, 64, 328, 64)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u4x2k"]
+texture = ExtResource("5_tsmm8")
+region_rect = Rect2(401, 2716, 181, 189)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1yrp6"]
+texture = ExtResource("5_tsmm8")
+region_rect = Rect2(401, 1190, 181, 190)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lg8pt"]
+texture = ExtResource("5_tsmm8")
+region_rect = Rect2(197, 2716, 181, 189)
 
 [node name="LevelSelect" type="Control"]
 layout_mode = 3
@@ -67,7 +80,7 @@ expand_mode = 1
 
 [node name="ClipControl" type="Control" parent="LevelMenu"]
 clip_contents = true
-custom_minimum_size = Vector2(548, 292)
+custom_minimum_size = Vector2(548, 100)
 layout_mode = 1
 anchor_left = 0.077
 anchor_top = 0.267
@@ -76,14 +89,36 @@ anchor_bottom = 0.816
 offset_left = -0.0510063
 offset_top = -0.0440063
 offset_right = 0.310974
-offset_bottom = -0.11203
+offset_bottom = -0.112
 
 [node name="GridContainer" type="HBoxContainer" parent="LevelMenu/ClipControl"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(548, 292)
+custom_minimum_size = Vector2(548, 100)
 layout_mode = 0
-offset_right = 591.0
-offset_bottom = 292.0
+offset_right = 548.0
+offset_bottom = 150.0
 
 [node name="GridContainer" parent="LevelMenu/ClipControl/GridContainer" instance=ExtResource("4_y3d77")]
+custom_minimum_size = Vector2(548, 130)
 layout_mode = 2
+
+[node name="Regresar" type="Button" parent="."]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -79.0
+offset_top = -74.0
+offset_right = -19.0
+offset_bottom = -14.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxTexture_u4x2k")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1yrp6")
+theme_override_styles/normal = SubResource("StyleBoxTexture_lg8pt")
+
+[connection signal="pressed" from="Regresar" to="." method="_on_regresar_pressed"]

@@ -3,9 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://b15t0058cev3q" path="res://level_button.tscn" id="1_2rtpn"]
 
 [node name="GridContainer" type="GridContainer"]
-custom_minimum_size = Vector2(548, 292)
+custom_minimum_size = Vector2(548, 100)
 offset_right = 548.0
-offset_bottom = 292.0
+offset_bottom = 130.0
 columns = 5
 
 [node name="LevelButton" parent="." instance=ExtResource("1_2rtpn")]
@@ -21,4 +21,5 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="LevelButton5" parent="." instance=ExtResource("1_2rtpn")]
+custom_minimum_size = Vector2(50, 30)
 layout_mode = 2

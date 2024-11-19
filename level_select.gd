@@ -43,3 +43,7 @@ func animateGridPosition(finalValue):
 	create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).tween_property(
 		grid_container, "position:x", finalValue, 0.5
 	)
+
+
+func _on_regresar_pressed() -> void:
+	get_tree().change_scene_to_file("res://scene/Main.tscn") 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dc388hkklqvvc"]
+[gd_scene load_steps=14 format=3 uid="uid://dc388hkklqvvc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_tievw"]
 [ext_resource type="Texture2D" uid="uid://d0iptv1mt3f" path="res://assets/fondo1.jpg" id="2_w25ur"]
@@ -12,7 +12,7 @@ region_rect = Rect2(401, 972, 181, 190)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m72p1"]
 texture = ExtResource("5_mc2lv")
-region_rect = Rect2(606, 972, 181, 190)
+region_rect = Rect2(401, 972, 181, 190)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i1eo7"]
 texture = ExtResource("5_mc2lv")
@@ -20,13 +20,19 @@ region_rect = Rect2(197, 972, 181, 190)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q1prs"]
 texture = ExtResource("5_mc2lv")
+region_rect = Rect2(2352, 537, 181, 189)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pg7fa"]
 texture = ExtResource("5_mc2lv")
+region_rect = Rect2(2352, 537, 181, 189)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a0v4i"]
 texture = ExtResource("5_mc2lv")
 region_rect = Rect2(2148, 537, 181, 189)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qw58h"]
+texture = ExtResource("5_mc2lv")
+region_rect = Rect2(3502, 537, 181, 189)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i726w"]
 texture = ExtResource("5_mc2lv")
@@ -110,6 +116,7 @@ size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Controles")
 focus_neighbor_bottom = NodePath("../Iniciar")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxTexture_qw58h")
 theme_override_styles/normal = SubResource("StyleBoxTexture_i726w")
 
 [node name="Settings" parent="UI" instance=ExtResource("3_dt7l5")]
