@@ -1,5 +1,10 @@
 extends Node2D
 
+var pause_button : Button
+var pause_menu : Control
+var close_button : Button
+var salir_button : Button
+
 # ------------------------------
 # Variables para controlar el juego
 # ------------------------------
@@ -64,6 +69,8 @@ var life_loss_sound: AudioStreamPlayer  # Sonido para la pérdida de vida
 # Panel de nivel completado
 var completion_panel: Panel
 var continue_button: Button
+var retry_button: Button
+var exit_button: Button
 
 # Fondo del juego
 var background_texture: Texture
@@ -73,6 +80,7 @@ var level_completed: bool = false  # Si el nivel ha sido completado
 
 # Variable para el sonido de victoria
 var victory_sound: AudioStreamPlayer
+
 
 # ------------------------------
 # Función que se ejecuta al iniciar el juego
@@ -88,6 +96,7 @@ func _ready():
 	background_music.play()
 
 	# Configurar el fondo del juego
+	background_texture = preload("res://assets/fondo4.jpg")
 	var background_rect = TextureRect.new()
 	background_rect.texture = background_texture
 	background_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -107,14 +116,17 @@ func _ready():
 	# Inicializar etiquetas de información
 	timer_label = Label.new()
 	timer_label.position = Vector2(10, 10)
+	timer_label.add_theme_font_size_override("font_size", 20) 
 	add_child(timer_label)
 
 	letters_removed_label = Label.new()
 	letters_removed_label.position = Vector2(10, 30)
+	letters_removed_label.add_theme_font_size_override("font_size", 20) 
 	add_child(letters_removed_label)
 
 	letters_lost_label = Label.new()
 	letters_lost_label.position = Vector2(10, 50)
+	letters_lost_label.add_theme_font_size_override("font_size", 20) 
 	add_child(letters_lost_label)
 
 	# Cargar sonidos
@@ -170,20 +182,125 @@ func _ready():
 	continue_button.set_custom_minimum_size(Vector2(200, 60))
 	continue_button.connect("pressed", Callable(self, "_on_continue_button_pressed"))
 	vbox.add_child(continue_button)
-	
 	# Botón para reintentar
-	var retry_button = Button.new()
+	retry_button  = Button.new()
 	retry_button.text = "Reintentar"
 	retry_button.set_custom_minimum_size(Vector2(200, 60))
 	retry_button.connect("pressed", Callable(self, "_on_retry_button_pressed"))
 	vbox.add_child(retry_button)
+	
+	exit_button = Button.new()
+	exit_button.text = "Salir"
+	exit_button.set_custom_minimum_size(Vector2(200, 60))
+	exit_button.connect("pressed", Callable(self, "_on_salir_button_pressed"))
+	vbox.add_child(exit_button)
 
 	# Establecer el tamaño del VBoxContainer para que ajuste su contenido
 	vbox.size = Vector2(800, 300)  # Asegúrate de que el VBox tenga un tamaño definido
 
 	completion_panel.add_child(vbox)
 	add_child(completion_panel)
+	
+	
+	# MENU DE PAUSA
+	# Crear el botón de pausa
+	pause_button = Button.new()
+	pause_button.text = "Pausar"
+	pause_button.name = "pause_button" 
+	pause_button.text = "||"  # Texto inicial (ícono de pausa)
+	pause_button.position = Vector2(get_viewport().size.x - 110, 10)  # Posición en la parte superior derecha
+	pause_button.set_custom_minimum_size(Vector2(100, 40))  # Tamaño del botón
 
+
+	# Asegúrate de agregar el botón de pausa al nodo principal solo una vez
+	if not has_node("PauseButton"):
+		pause_button.name = "PauseButton"
+		add_child(pause_button)
+		pause_button.connect("pressed", Callable(self, "_on_pause_button_pressed"))
+
+	# Crear el menú de pausa
+	pause_menu = Control.new()
+	pause_menu.name = "PauseMenu"
+	pause_menu.visible = false  # Iniciar oculto
+
+
+	# Asegúrate de agregar el menú de pausa al nodo principal solo una vez
+	if not has_node("PauseMenu"):
+		add_child(pause_menu)
+
+	# Crear fondo para el menú de pausa
+	var menu_bg = ColorRect.new()
+	menu_bg.color = Color(0, 0, 0, 0)  # Fondo semi-transparente
+	
+
+	# Asegúrate de agregar el fondo del menú de pausa solo una vez
+	if not pause_menu.has_node("MenuBG"):
+		menu_bg.name = "MenuBG"
+		pause_menu.add_child(menu_bg)
+
+	# Crear el botón para cerrar el menú de pausa
+	close_button = Button.new()
+	close_button.text = "Continuar"
+
+
+	# Modificar color de fondo y bordes
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0.2, 0.5, 1.0)  # Cambia el color de fondo
+	style_box.set_border_width_all(4) 
+	style_box.border_color = Color(1, 1, 1)  # Cambia el color del borde
+	
+	style_box.content_margin_left = 15  # Margen izquierdo
+	style_box.content_margin_right = 15  # Margen derecho
+	style_box.content_margin_top = 8    # Margen superior
+	style_box.content_margin_bottom = 8 # Margen inferior
+	
+	style_box.set_corner_radius_all(16) 
+	
+	# Aplicar estilo al botón
+	close_button.add_theme_stylebox_override("normal", style_box)
+
+	# Cambiar el color del texto y la fuente
+	close_button.add_theme_color_override("font_color", Color(1, 1, 1))  # Color del texto
+	var font = FontFile.new()
+	font.font_data = load("res://fonts/OpenSans.ttf")  # Ruta a tu fuente
+	close_button.add_theme_font_size_override("font_size", 30)
+	close_button.set("custom_fonts/font", font)
+	
+	
+	# Asegúrate de agregar el botón de cerrar solo una vez
+	if not pause_menu.has_node("CloseButton"):
+		close_button.name = "CloseButton"
+		pause_menu.add_child(close_button)
+		close_button.connect("pressed", Callable(self, "_on_close_button_pressed"))
+		
+		
+	pause_menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	
+	# Crear el botón para salir al menú principal
+	salir_button = Button.new()
+	salir_button.text = "Ir al menú"
+	salir_button.position = Vector2(
+	salir_button.position.x,  # Mantener la posición X actual
+	salir_button.position.y + 80  # Sumar 80 a la componente Y
+)
+
+
+	# Aplicar estilo al botón de salir (opcional)
+	var styles_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0.2, 0.5, 1.0)  # Cambia el color de fondo
+	style_box.set_border_width_all(4)
+	style_box.border_color = Color(1, 1, 1)  # Cambia el color del borde
+	style_box.set_corner_radius_all(16)
+	salir_button.add_theme_stylebox_override("normal", style_box)
+
+	salir_button.add_theme_color_override("font_color", Color(1, 1, 1))  # Cambia el color del texto
+	salir_button.add_theme_font_size_override("font_size", 30)
+	
+	# Agregar el botón al menú de pausa
+	if not pause_menu.has_node("SalirButton"):
+		salir_button.name = "SalirButton"
+		pause_menu.add_child(salir_button)
+		salir_button.connect("pressed", Callable(self, "_on_salir_button_pressed"))
 # ------------------------------
 # Función que se ejecuta al tiempo del temporizador de letras
 # ------------------------------
@@ -195,14 +312,19 @@ func _on_letter_timer_timeout():
 		var start_y = -50
 
 		var letter = FallingLetter.new()
-		var vowels = ["A", "E", "I", "O", "U"]
-		letter.text = vowels[randi() % vowels.size()]  # Seleccionar una vocal aleatoria
+		var vowels = ['A', 'E', 'I', 'O', 'U']  # Array con las vocales
+		letter.text = vowels[randi() % vowels.size()]  # Seleccionar vocal al azar
 		letter.position = Vector2(randf_range(min_x, max_x), start_y)
-		letter.speed = get_letter_speed()  # Obtener velocidad de caída
-		letter.spawn_time = elapsed_time  # Registrar el tiempo de aparición
+		letter.speed = randf_range(fall_speed_range.x, fall_speed_range.y)  # Velocidad original
+		letter.spawn_time = elapsed_time
 		add_child(letter)
 		letters.append(letter)
+		
+		# Ajustar tiempo del temporizador dinámicamente
 		letter_timer.wait_time = randf_range(0.5, 1.5)  # Cambiar tiempo de espera del temporizador
+
+
+
 
 # ------------------------------
 # Función para obtener la velocidad de la letra
@@ -217,6 +339,15 @@ func get_letter_speed() -> float:
 # Función que se ejecuta cada frame
 # ------------------------------
 func _process(delta):
+		# Alinear dinamicamente boton de pausa
+	pause_button.position = Vector2(get_viewport().size.x - pause_button.get_combined_minimum_size().x - 20, 10)
+
+	# Centrar dinamicamente menu de pausa
+	pause_menu.position = Vector2(
+	(get_viewport().size.x - pause_button.get_combined_minimum_size().x) / 2,
+	(get_viewport().size.y - pause_button.get_combined_minimum_size().y) / 2
+	)
+
 	elapsed_time += delta  # Aumentar el tiempo transcurrido
 	if int(elapsed_time) % 60 == 0 and elapsed_time > 60:
 		additional_letters += 2  # Aumentar letras adicionales cada 60 segundos
@@ -243,7 +374,9 @@ func _process(delta):
 				# Verificar si se han eliminado suficientes letras para completar el nivel
 				if letters_removed >= 3:
 					level_completed = true  # Marcar el nivel como completado
-					show_completion_panel()  # Mostrar panel de finalización
+					if show_completion_panel:
+						show_completion_panel() # Mostrar panel de finalización
+						pause_button.disabled = true
 					letter_timer.stop()  # Detener el temporizador
 				break
 
@@ -314,11 +447,19 @@ func show_completion_panel():
 	var completion_label = completion_panel.get_child(0).get_child(0)
 	completion_label.add_theme_font_override("font", font)  # Fuente para el texto de "Nivel 1 Completado"
 	completion_label.add_theme_font_size_override("font_size", 64)  # Tamaño de la fuente
-	completion_label.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Cambiar color del texto
+	completion_label.add_theme_color_override("font_color", Color(0.2, 0.6, 0.5))  # Cambiar color del texto
 
 	continue_button.add_theme_font_override("font", font)  # Fuente para el botón "Continuar"
 	continue_button.add_theme_font_size_override("font_size", 40)  # Tamaño de la fuente para el botón
-	continue_button.add_theme_color_override("font_color", Color(0.8, 0.2, 0.2))  # Cambiar color del texto del botón
+	continue_button.add_theme_color_override("font_color", Color(0.98, 0.98, 0.96))  # Cambiar color del texto del botón
+	
+	retry_button.add_theme_font_override("font", font)  # Fuente para el botón "Continuar"
+	retry_button.add_theme_font_size_override("font_size", 40)  # Tamaño de la fuente para el botón
+	retry_button.add_theme_color_override("font_color", Color(0.98, 0.98, 0.96))  # Cambiar color del texto del botón
+	
+	exit_button.add_theme_font_override("font", font)  # Fuente para el botón "Continuar"
+	exit_button.add_theme_font_size_override("font_size", 40)  # Tamaño de la fuente para el botón
+	exit_button.add_theme_color_override("font_color", Color(0.98, 0.98, 0.96))  # Cambiar color del texto del botón
 	
 # Actualizar el label de tiempo
 	var time_label = completion_panel.get_child(0).get_child(1)
@@ -342,3 +483,19 @@ func _on_continue_button_pressed():
 func _on_retry_button_pressed():
 	completion_panel.visible = false  # Ocultar panel de completado
 	restart_game()  # Reiniciar juego
+	
+# Métodos de pausa
+func _on_pause_button_pressed():
+	get_tree().paused = true
+	pause_menu.visible = true
+	pause_button.disabled = true 
+
+func _on_close_button_pressed():
+	pause_menu.visible = false
+	get_tree().paused = false
+	pause_button.disabled = false 
+
+func _on_salir_button_pressed():
+	get_tree().paused = false  # Asegúrate de despausar antes de cambiar de escena
+	get_tree().change_scene_to_file("res://level_select.tscn")  # Cambia esto a la ruta de tu escena principal
+	

@@ -11,6 +11,6 @@ position = Vector2(711, 402)
 scale = Vector2(0.742708, 0.592047)
 
 [node name="Fondo3" type="Sprite2D" parent="."]
-position = Vector2(706, 430.75)
-scale = Vector2(0.739583, 0.633653)
+position = Vector2(574, 430.75)
+scale = Vector2(0.602083, 0.633653)
 texture = ExtResource("2_314sc")
