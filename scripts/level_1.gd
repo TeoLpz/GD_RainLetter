@@ -312,6 +312,7 @@ func _on_letter_timer_timeout():
 		var start_y = -50
 
 		var letter = FallingLetter.new()
+		fall_speed_range = Vector2(10, 30)
 		var vowels = ['A', 'E', 'I', 'O', 'U']  # Array con las vocales
 		letter.text = vowels[randi() % vowels.size()]  # Seleccionar vocal al azar
 		letter.position = Vector2(randf_range(min_x, max_x), start_y)
@@ -323,17 +324,14 @@ func _on_letter_timer_timeout():
 		# Ajustar tiempo del temporizador dinámicamente
 		letter_timer.wait_time = randf_range(0.5, 1.5)  # Cambiar tiempo de espera del temporizador
 
-
-
-
 # ------------------------------
 # Función para obtener la velocidad de la letra
 # ------------------------------
 func get_letter_speed() -> float:
 	if elapsed_time < 30:
-		return randf_range(10, 30)  # Velocidad inicial
+		return randf_range(1, 1)  # Velocidad inicial
 	else:
-		return randf_range(40, 55)  # Velocidad después de 30 segundos
+		return randf_range(1, 1)  # Velocidad después de 30 segundos
 
 # ------------------------------
 # Función que se ejecuta cada frame
