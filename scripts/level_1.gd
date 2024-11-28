@@ -370,7 +370,7 @@ func _process(delta):
 				update_labels()  # Actualizar etiquetas de información
 
 				# Verificar si se han eliminado suficientes letras para completar el nivel
-				if letters_removed >= 3:
+				if letters_removed >= 10:
 					level_completed = true  # Marcar el nivel como completado
 					if show_completion_panel:
 						show_completion_panel() # Mostrar panel de finalización
