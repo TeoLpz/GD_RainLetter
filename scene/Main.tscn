@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://dc388hkklqvvc"]
+[gd_scene load_steps=15 format=3 uid="uid://dc388hkklqvvc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_tievw"]
 [ext_resource type="Texture2D" uid="uid://d0iptv1mt3f" path="res://assets/fondo1.jpg" id="2_w25ur"]
 [ext_resource type="PackedScene" uid="uid://ckstjehwjhnt4" path="res://scene/settings.tscn" id="3_dt7l5"]
 [ext_resource type="Texture2D" uid="uid://cy7wi2jufnkl7" path="res://assets/letras.png" id="4_17ovb"]
 [ext_resource type="Texture2D" uid="uid://dkmkknx1qkcpm" path="res://assets/MinimalUI/buttons/Button.png" id="5_mc2lv"]
+[ext_resource type="AudioStream" path="res://sounds/start-menu.mp3" id="6_sesce"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i0vn5"]
 texture = ExtResource("5_mc2lv")
@@ -121,6 +122,11 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_i726w")
 
 [node name="Settings" parent="UI" instance=ExtResource("3_dt7l5")]
 visible = false
+
+[node name="Start-menu" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_sesce")
+volume_db = -9.0
+autoplay = true
 
 [connection signal="pressed" from="UI/MainMenu/VBoxContainer/HBoxContainer/Iniciar" to="UI/MainMenu" method="_on_start_pressed"]
 [connection signal="pressed" from="UI/MainMenu/VBoxContainer/HBoxContainer/Controles" to="UI/MainMenu" method="_on_option_pressed"]

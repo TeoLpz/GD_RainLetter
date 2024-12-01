@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bb4j37jcf566p"]
+[gd_scene load_steps=12 format=3 uid="uid://bb4j37jcf566p"]
 
 [ext_resource type="Texture2D" uid="uid://nh0xde5n53ti" path="res://assets/BG.png" id="1_7wc33"]
 [ext_resource type="Script" path="res://level_select.gd" id="1_ked1b"]
 [ext_resource type="Texture2D" uid="uid://7v1ppccp8pdd" path="res://assets/Window.png" id="2_ufr1g"]
 [ext_resource type="PackedScene" uid="uid://c17uvq6hcuehl" path="res://grid_container.tscn" id="4_y3d77"]
 [ext_resource type="Texture2D" uid="uid://dkmkknx1qkcpm" path="res://assets/MinimalUI/buttons/Button.png" id="5_tsmm8"]
+[ext_resource type="AudioStream" uid="uid://cfhquny1071d2" path="res://sounds/select-level.mp3" id="6_eo6hj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2vq8k"]
 atlas = ExtResource("2_ufr1g")
@@ -120,5 +121,9 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/hover = SubResource("StyleBoxTexture_u4x2k")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_1yrp6")
 theme_override_styles/normal = SubResource("StyleBoxTexture_lg8pt")
+
+[node name="Select-level" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_eo6hj")
+autoplay = true
 
 [connection signal="pressed" from="Regresar" to="." method="_on_regresar_pressed"]

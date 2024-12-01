@@ -1,10 +1,11 @@
-[gd_scene load_steps=60 format=3 uid="uid://ckstjehwjhnt4"]
+[gd_scene load_steps=61 format=3 uid="uid://ckstjehwjhnt4"]
 
 [ext_resource type="Script" path="res://scripts/settings.gd" id="2_lmq4b"]
 [ext_resource type="Texture2D" uid="uid://ced07b2tnwy8a" path="res://assets/teclado.png" id="3_0vyjp"]
 [ext_resource type="Texture2D" uid="uid://nh0xde5n53ti" path="res://assets/BG.png" id="3_o2jnq"]
 [ext_resource type="Texture2D" uid="uid://dkmkknx1qkcpm" path="res://assets/MinimalUI/buttons/Button.png" id="4_h3qj8"]
 [ext_resource type="Texture2D" uid="uid://cc2wy2pgvrtd0" path="res://assets/e0yxjfs6.bmp" id="4_vd1er"]
+[ext_resource type="AudioStream" uid="uid://biimqn8fy3m4i" path="res://sounds/start-level.mp3" id="6_vql2p"]
 
 [sub_resource type="StyleBoxFlat" id="1"]
 bg_color = Color(0, 0, 0, 1)
@@ -609,13 +610,18 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_dtxpu")
 theme_override_styles/normal = SubResource("StyleBoxTexture_un83c")
 
 [node name="E0Yxjfs6" type="Sprite2D" parent="."]
-position = Vector2(1113, 105)
+position = Vector2(819, 113)
 scale = Vector2(1.2522, 1.56098)
 texture = ExtResource("4_vd1er")
 
 [node name="Teclado" type="Sprite2D" parent="."]
-position = Vector2(1078, 509)
+position = Vector2(812, 512)
 scale = Vector2(2.6892, 2.21589)
 texture = ExtResource("3_0vyjp")
+
+[node name="Start-level" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_vql2p")
+volume_db = -5.0
+autoplay = true
 
 [connection signal="pressed" from="Controles/Regresar" to="." method="_on_back_pressed"]
